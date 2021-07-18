@@ -13,7 +13,6 @@
   "devDependencies": {
     "@sveltejs/adapter-vercel": "next",
     "@sveltejs/kit": "next",
-    "@types/d3": "^7.0.0",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
     "eslint": "^7.30.0",
@@ -30,6 +29,7 @@
   "type": "module",
   "dependencies": {
     "d3": "^7.0.0",
+    "@types/d3": "^7.0.0",
     "katex": "^0.13.11"
   }
 }
