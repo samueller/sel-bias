@@ -21,7 +21,7 @@ line.grid {
     stroke: black;
     opacity: 0.1;
 }
-#stats-window {
+#hover-panel {
     /* display: none; */
     opacity: 0;
     pointer-events: none;
@@ -36,13 +36,13 @@ line.grid {
     line-height: 1.1;
     padding: 4px 7px;
 }
-#stats-window.biased {
+#hover-panel.biased {
     color: rgb(108, 0, 0);
 }
-#stats-window:not(.biased) h3 {
+#hover-panel:not(.biased) h3 {
     display: none;
 }
-#stats-window ul {
+#hover-panel ul {
     margin: 0;
     padding: 0;
     list-style-type: none;
@@ -52,7 +52,24 @@ line.grid {
     fill-opacity: 0.3;
 }
 .biased h3 {
+    margin-top: 0;
     margin-bottom: 2px !important;
     color: darkred;
     text-transform: uppercase;
+}
+.possibly-unbiased {
+    stroke: green;
+    stroke-width: 2;
+    fill: transparent;
+}
+#arrow {
+    fill: white;
+}
+text.possibly-unbiased-label {
+    text-anchor: middle;
+    font-size: 16px;
+    font-weight: bold;
+    fill: white;
+    text-shadow: 1px 1px 1px black, 0 0 10px black;
+    dominant-baseline: hanging;
 }

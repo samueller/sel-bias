@@ -11,4 +11,5 @@ export const px = writable(0.5),
 	px0y = derived([px0, pycx0], ([$px0, $pycx0]) => $px0 * $pycx0),
 	px0y0 = derived([px0, py0cx0], ([$px0, $py0cx0]) => $px0 * $py0cx0),
 	pyxUB = derived([pxy, px0], ([$pxy, $px0]) => $pxy + $px0),
-	pyx0UB = derived([px0y, px], ([$px0y, $px]) => $px0y + $px)
+	pyx0UB = derived([px0y, px], ([$px0y, $px]) => $px0y + $px),
+	bounds = writable(0)
