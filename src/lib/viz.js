@@ -1,5 +1,5 @@
-// import * as d3 from 'd3' //'https://cdn.skypack.dev/d3@7'
-// import * as d3 from '../../node_modules/d3/dist/d3.js'
+import * as d3 from 'd3'
+
 import { get } from 'svelte/store'
 import { px, px0, pycx, pycx0, pxy, px0y, px0y0, pyxUB, pyx0UB, bounds } from './store'
 import { round2, probabilitySvg, absoluteBounds } from './util'
@@ -54,7 +54,7 @@ const updateHoverPanel = (pyxs, pyx0s, pxy, px0y, pyxUB, pyx0UB) => {
 		]
 	}
 
-class Viz {
+export default class Viz {
 	constructor(el, axisMargin = 25, labelMargin = 25) {
 		this.svg = d3.select(el)
 		this.width = el.clientWidth
@@ -336,5 +336,3 @@ class Viz {
 		this.svg.on('mouseover mousemove touchmove', this.hover).on('mouseout touchleave', this.unhover)
 	}
 }
-
-export { Viz }

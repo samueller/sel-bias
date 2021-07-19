@@ -1,29 +1,19 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import * as d3 from '../../node_modules/d3/dist/d3.js'
-	// import * as d3 from 'd3'
 
 	import { px, px0, pycx, pycx0, pxy, pxy0, px0y, px0y0, pyxUB, pyx0UB, bounds } from '../lib/store'
 	import { latex } from '../lib/latex'
 	import { round2 } from '../lib/util'
-	import { Viz } from '../lib/viz'
 
-	let vizEl: SVGSVGElement, viz: Viz
+	import 'katex/dist/katex.css'
 
-	onMount(() => {
-		viz = new Viz(vizEl)
+	let vizEl: SVGSVGElement
+	let viz: import('../lib/viz').default
+
+	onMount(async () => {
+		viz = new (await import('../lib/viz')).default(vizEl)
 	})
 </script>
-
-<svelte:head>
-	<link
-		rel="stylesheet"
-		href="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css"
-		integrity="sha384-Um5gpz1odJg5Z4HAmzPtgZKdTBHZdw8S29IecapCSB31ligYPhHQZMIlWLYQGVoc"
-		crossorigin="anonymous"
-	/>
-	<link rel="stylesheet" href="/css/viz.css" />
-</svelte:head>
 
 <h1 class="title">Exposing Selection Bias</h1>
 <p>
@@ -134,3 +124,81 @@
 		</output>
 	</div>
 </form>
+
+<style lang="scss" global>
+	svg :not(rect.background) {
+		pointer-events: none;
+	}
+	tspan.sub {
+		font-size: 70%;
+	}
+	.axis-label {
+		font-size: 9pt;
+		text-anchor: middle;
+	}
+	text {
+		font-family: 'Open Sans', sans-serif;
+		font-size: 7pt;
+	}
+	text.contour {
+		font-size: 9pt;
+		font-weight: bold;
+		dominant-baseline: middle;
+	}
+	line.grid {
+		stroke: black;
+		opacity: 0.1;
+	}
+	#hover-panel {
+		/* display: none; */
+		opacity: 0;
+		pointer-events: none;
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 290px;
+		border-radius: 5px;
+		/* border: 1px solid black; */
+		background-color: rgba(255, 255, 255, 0.4);
+		color: black;
+		line-height: 1.1;
+		padding: 4px 7px;
+	}
+	#hover-panel.biased {
+		color: rgb(108, 0, 0);
+	}
+	#hover-panel:not(.biased) h3 {
+		display: none;
+	}
+	#hover-panel ul {
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+	}
+	.biased {
+		fill: black;
+		fill-opacity: 0.3;
+	}
+	.biased h3 {
+		margin-top: 0;
+		margin-bottom: 2px !important;
+		color: darkred;
+		text-transform: uppercase;
+	}
+	.possibly-unbiased {
+		stroke: green;
+		stroke-width: 2;
+		fill: transparent;
+	}
+	#arrow {
+		fill: white;
+	}
+	text.possibly-unbiased-label {
+		text-anchor: middle;
+		font-size: 16px;
+		font-weight: bold;
+		fill: white;
+		text-shadow: 1px 1px 1px black, 0 0 10px black;
+		dominant-baseline: hanging;
+	}
+</style>
