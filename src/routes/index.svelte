@@ -7,8 +7,10 @@
 
 	import 'katex/dist/katex.css'
 
-	let vizEl: SVGSVGElement
-	let viz: import('../lib/viz').default
+	type Viz = import('../lib/viz').default
+
+	let vizEl: SVGSVGElement | null = null
+	let viz: Viz | null = null
 
 	onMount(async () => {
 		viz = new (await import('../lib/viz')).default(vizEl)
