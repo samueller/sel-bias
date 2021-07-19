@@ -77,7 +77,10 @@ export default class Viz {
 		this.axisRight = d3.axisRight(this.scaleY)
 		this.axisTop = d3.axisTop(this.scaleX)
 		this.axisBottom = d3.axisBottom(this.scaleX)
-		this.numContours = 10
+		this.numContours = 20
+		this.contourColors = d3
+			.range(this.numContours)
+			.map(c => d3.interpolateSinebow(c / this.numContours))
 
 		this.drawAxes()
 		this.drawGridLines()
@@ -145,19 +148,49 @@ export default class Viz {
 	}
 	contoursLB = pxypx0y0 => d => {
 		return this.svgStringFromCoords([
-			[pxypx0y0 - d / this.numContours, 1],
-			[pxypx0y0 - (d + 1) / this.numContours, 1],
-			[0, 1 - pxypx0y0 + (d + 1) / this.numContours],
-			[0, 1 - pxypx0y0 + d / this.numContours],
-			[pxypx0y0 - d / this.numContours, 1],
+			[pxypx0y0 - (2 * d) / this.numContours, 1],
+			[pxypx0y0 - (2 * (d + 1)) / this.numContours, 1],
+			[0, 1 - pxypx0y0 + (2 * (d + 1)) / this.numContours],
+			[0, 1 - pxypx0y0 + (2 * d) / this.numContours],
+			[pxypx0y0 - (2 * d) / this.numContours, 1],
 			[1, 1],
-			[1, 1 - pxypx0y0 - d / this.numContours],
-			[pxypx0y0 + d / this.numContours, 0],
-			[pxypx0y0 + (d + 1) / this.numContours, 0],
-			[1, 1 - pxypx0y0 - (d + 1) / this.numContours],
+			[1, 1 - pxypx0y0 - (2 * d) / this.numContours],
+			[pxypx0y0 + (2 * d) / this.numContours, 0],
+			[pxypx0y0 + (2 * (d + 1)) / this.numContours, 0],
+			[1, 1 - pxypx0y0 - (2 * (d + 1)) / this.numContours],
 			[1, 1]
 		])
 	}
+	contoursUB = mid => d =>
+		this.svgStringFromCoords(
+			d < 5
+				? [
+						[mid, 1],
+						[mid, 1],
+						[0, 1 - mid],
+						[0, 1 - mid],
+						[mid, 1],
+						[mid, 1],
+						[mid, 1],
+						[0, 1 - mid],
+						[0, 1 - mid],
+						[mid, 1],
+						[mid, 1]
+				  ]
+				: [
+						[mid - (2 * (d - 5)) / this.numContours, 1],
+						[mid - (2 * (d - 4)) / this.numContours, 1],
+						[0, 1 - mid + (2 * (d - 4)) / this.numContours],
+						[0, 1 - mid + (2 * (d - 5)) / this.numContours],
+						[mid - (2 * (d - 5)) / this.numContours, 1],
+						[mid, 1],
+						[mid + (2 * (d - 5)) / this.numContours, 1],
+						[0, 1 - mid - (2 * (d - 5)) / this.numContours],
+						[0, 1 - mid - (2 * (d - 4)) / this.numContours],
+						[mid + (2 * (d - 4)) / this.numContours, 1],
+						[mid, 1]
+				  ]
+		)
 	drawContours() {
 		this.svg
 			.append('clipPath')
@@ -174,7 +207,8 @@ export default class Viz {
 			.data(d3.range(this.numContours))
 			.join('polygon')
 			.attr('class', 'contour')
-			.attr('fill', d => d3.schemeSpectral[this.numContours][d])
+			// .attr('fill', d => d3.schemeSpectral[this.numContours][d])
+			.attr('fill', d => this.contourColors[d])
 			.attr('points', this.contoursLB(pxypx0y0))
 		group
 			.selectAll('text.contour')
@@ -182,39 +216,65 @@ export default class Viz {
 			.join('text')
 			.attr('class', 'contour')
 			.attr('opacity', 0.9)
+			// .attr('fill', d => (d == 0 || d == 8 || d == 9 ? 'white' : 'black'))
 			.attr('fill', d => (d == 0 || d == 8 || d == 9 ? 'white' : 'black'))
-			.text(d => `${round2(d / this.numContours)} to ${round2((d + 1) / this.numContours)}`)
+			// .text(d => `${round2(d / this.numContours)} to ${round2((d + 1) / this.numContours)}`)
+			.text(
+				d => `${round2((2 * d) / this.numContours)} to ${round2((2 * (d + 1)) / this.numContours)}`
+			)
 	}
 	contourHorizTextTransform = pxypx0y0 => d =>
 		`translate(${[
-			this.scaleX(pxypx0y0 + (d + 0.575) / this.numContours),
+			this.scaleX(pxypx0y0 + (2 * (d + 0.575)) / this.numContours),
 			this.scaleY(0.01)
 		]}) rotate(-45)`
 	contourVertTextTransform = pxypx0y0 => d =>
 		`translate(${[
 			this.scaleX(0.01),
-			this.scaleY(1 - pxypx0y0 + (d + 0.575) / this.numContours)
+			this.scaleY(1 - pxypx0y0 + (2 * (d + 0.575)) / this.numContours)
 		]}) rotate(-45)`
 	updateContours = (pxy, px0y0, bounds) => {
 		const pxypx0y0 = pxy + px0y0
+		// if (bounds == 0) {
 		this.svg
 			.selectAll('polygon.contour')
 			.join('polygon')
 			.transition()
 			.duration(1000)
-			.attr('points', bounds == 0 ? this.contoursLB(pxypx0y0) : this.contoursUB(pxypx0y0))
+			.attr('points', bounds == 0 ? this.contoursLB(pxypx0y0) : this.contoursUB(pxypx0y0 + 0.5))
 		this.svg
 			.selectAll('text.contour')
 			.join('text')
 			.transition()
 			.duration(1000)
-			// .attr('opacity', this.contourTextOpacity(model))
+			.attr('opacity', bounds == 0 ? 0.9 : 0)
 			.attr(
 				'transform',
 				pxypx0y0 < 0.5
 					? this.contourHorizTextTransform(pxypx0y0)
 					: this.contourVertTextTransform(pxypx0y0)
 			)
+		// } else {
+		// 	const mid = pxypx0y0 - 0.5
+		// 	this.svg
+		// 		.selectAll('polygon.contour')
+		// 		.join('polygon')
+		// 		.transition()
+		// 		.duration(1000)
+		// 		.attr('points', bounds == 0 ? this.contoursLB(pxypx0y0) : this.contoursUB(pxypx0y0))
+		// 	this.svg
+		// 		.selectAll('text.contour')
+		// 		.join('text')
+		// 		.transition()
+		// 		.duration(1000)
+		// 		// .attr('opacity', this.contourTextOpacity(model))
+		// 		.attr(
+		// 			'transform',
+		// 			pxypx0y0 < 0.5
+		// 				? this.contourHorizTextTransform(pxypx0y0)
+		// 				: this.contourVertTextTransform(pxypx0y0)
+		// 		)
+		// }
 	}
 	drawDiagonal() {
 		this.svg
