@@ -17,10 +17,10 @@
 	})
 </script>
 
-<h1 class="title">Exposing Selection Bias</h1>
-<p>
-	{@html latex(`\\text{ACE} - \\text{CACE} = [P(y_x) - P(y_{x'})] - [P(y_x|s) - P(y_{x'}|s)]`)}<br
-	/>
+<h1 style="margin: 0">Exposing Selection Bias</h1>
+<h3 style="margin-bottom: 0">Selection Bias Severity</h3>
+<p style="margin-top: 0">
+	{@html latex(`\\text{SBS} = [P(y_x) - P(y_{x'})] - [P(y_x|s) - P(y_{x'}|s)]`)}<br />
 	Colors visualize
 	<label class="radio" for="lower-bounds"
 		><input id="lower-bounds" name="bounds" bind:group={$bounds} value={0} type="radio" /> Lower bounds</label
@@ -43,7 +43,7 @@
 	></svg
 >
 <div id="hover-panel">
-	<h3 class="title is-4">Selection Biased</h3>
+	<h3>Selection Biased</h3>
 	<ul>
 		<li>
 			{@html latex(`P(y_x|s), P(y_{x'}|s)`)}:
@@ -117,15 +117,16 @@
 	</div>
 	<div>
 		<output>
-			{@html latex(`${round2($pxy)} \\leqslant P(y_x|s) \\leqslant ${round2($pyxUB)}`)}
+			{@html latex(`${round2($pxy)} \\leqslant P(y_x) \\leqslant ${round2($pyxUB)}`)}
 		</output>
 	</div>
 	<div>
 		<output>
-			{@html latex(`${round2($px0y)} \\leqslant P(y_{x'}|s) \\leqslant ${round2($pyx0UB)}`)}
+			{@html latex(`${round2($px0y)} \\leqslant P(y_{x'}) \\leqslant ${round2($pyx0UB)}`)}
 		</output>
 	</div>
 </form>
+<img alt="DAG with confounding and a selection node" src="/selection_dag.png" />
 
 <style lang="scss" global>
 	svg :not(rect.background) {

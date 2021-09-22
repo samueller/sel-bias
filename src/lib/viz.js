@@ -34,7 +34,7 @@ const updateHoverPanel = (pyxs, pyx0s, pxy, px0y, pyxUB, pyx0UB) => {
 			)}`
 		)
 		latexElement('hover-ace-bias')(
-			`${round2(acesAbsLB)} \\leqslant |ACE - CACE| \\leqslant ${round2(acesAbsUB)}`
+			`${round2(acesAbsLB)} \\leqslant |SBS| \\leqslant ${round2(acesAbsUB)}`
 		)
 	},
 	biasedRegionPoly = (px, px0, pxy, px0y) => {
